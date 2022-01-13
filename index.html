@@ -45,12 +45,23 @@
       a:hover {
         color: rgb(233, 140, 94);
       }
+
+      #note {
+        text-align: center;
+        background-color: rgb(255, 246, 242);
+        color: rgb(233, 140, 94);
+        padding: 1rem;
+      }
     </style>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.11.0/build/ol.js"></script>
   </head>
   <body>
     <div id="map" class="map"></div>
     <div id="panel">
+      <p id="note" hidden>
+        Note: you will need to refresh the page for the service worker to kick
+        in.
+      </p>
       <h1>Generating fake XYZ Tiles using a Service Worker</h1>
       <p>
         The orange tiles in the map above are generated client-side using a
@@ -68,6 +79,16 @@
       </p>
     </div>
     <script type="text/javascript">
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        console.log(registrations);
+        const isActivated = registrations.some(
+          (r) => r.active && r.active.scriptURL.endsWith("fake-xyz-tile-sw.js")
+        );
+
+        if (!isActivated) {
+          document.getElementById("note").toggleAttribute("hidden", false);
+        }
+      });
       navigator.serviceWorker.register("fake-xyz-tile-sw.js");
 
       var map = new ol.Map({
