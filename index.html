@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Generating fake XYZ Tiles using a Service Worker - Joel Malone
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.11.0/css/ol.css"
+      type="text/css"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        color: rgb(255, 246, 242);
+      }
+      #map {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+      }
+      #panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        background-color: #000b;
+        padding: 0 1rem;
+      }
+
+      h1 {
+        color: white;
+      }
+      a {
+        color: unset;
+      }
+      a:hover {
+        color: rgb(233, 140, 94);
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.11.0/build/ol.js"></script>
+  </head>
+  <body>
+    <div id="map" class="map"></div>
+    <div id="panel">
+      <h1>Generating fake XYZ Tiles using a Service Worker</h1>
+      <p>
+        The orange tiles in the map above are generated client-side using a
+        service worker.
+      </p>
+      <p>
+        The service worker intercepts tile requests, generates a tile image
+        using the Canvas API, then serves the result.
+      </p>
+      <p>Learn more about this technique here.</p>
+      <p>
+        By Joel Malone (<a target="_blank" href="https://joelmalone.com.au/"
+          >joelmalone.com.au</a
+        >)
+      </p>
+    </div>
+    <script type="text/javascript">
+      navigator.serviceWorker.register("fake-xyz-tile-sw.js");
+
+      var map = new ol.Map({
+        target: "map",
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM(),
+          }),
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+              url: "https://fake-xyz-server/{x}/{y}/{z}.png",
+            }),
+          }),
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([115.5069378, -32.0148351]),
+          zoom: 13.5,
+        }),
+      });
+    </script>
+  </body>
+</html>
